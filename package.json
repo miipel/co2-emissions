@@ -1,0 +1,28 @@
+{
+  "name": "co2-emissions",
+  "version": "1.0.0",
+  "description": "Used to track co2-emissions",
+  "main": "./bin/index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "test": "jest --verbose",
+    "lint": "eslint ."
+  },
+  "author": "Miika Peltotalo",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "express-promise-router": "^3.0.3",
+    "fs-extra": "^7.0.1",
+    "morgan": "^1.9.1",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.7"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0",
+    "nodemon": "^1.18.10"
+  }
+}
