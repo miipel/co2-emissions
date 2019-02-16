@@ -1,14 +1,36 @@
-const request = require('request-promise-native')
-const os = require('os')
-const fs = require('fs-extra')
+const fetch = require('node-fetch')
+const streams = require('memory-streams')
+const unzip = require('unzip')
+const xml = require('xml-parse')
+const fs = require('fs')
 const baseUrl = 'http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=xml'
 
-const response = request.get(baseUrl, {
-  zip: true,
-  resolveWithFullResponse: true,
-  encoding: null
+
+const { Transform } = require('stream')
+
+const xmlParser = new Transform({
+  readableObjectMode: true,
+
+  transform(chunk, encoding, callback) {
+    this.push(xml.parse(chunk))
+    callback()
+  }
 })
 
-const tmpPath = `${os.tmpdir()}/${new Date().getTime()}.zip`
-
-fs.writeFile(tmpPath, response.body, 'binary')
+try {
+  fetch(baseUrl)
+    .then(response => response.body)
+    .then(body => {
+      const stream = body
+      stream
+        .pipe(unzip.Parse())
+        .pipe(xmlParser)
+      const writer = new streams.WritableStream()
+      stream.pipe(writer)
+      stream.on('readable', function() {
+        console.log(writer.toString())
+      })
+    })
+} catch(error) {
+  console.log(error)
+}
