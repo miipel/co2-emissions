@@ -1,10 +1,7 @@
 const express = require('express')
 const logger = require('morgan')
 const bodyParser = require('body-parser')
-
-const routes = require('./routes/index')
-const emissionsService = require('./services/emissionsService')
-const populationService = require('./services/populationService')
+const routes = require('./routes')
 
 const app = express()
 
@@ -18,5 +15,11 @@ app.use(
 )
 
 app.use('/api', routes)
+
+app.use((req, res, next) => {
+  const err = new Error('Not Found')
+  err.status = 404
+  next(err)
+})
 
 module.exports = app
