@@ -1,5 +1,7 @@
-# Emissions tracker
+# Emissions tracker -project
 
-Node backend for providing data of carbon dioxide emissions and population.
+Node back end for providing data of carbon dioxide emissions and population.
 
 https://emissionstracker.herokuapp.com/
+https://emissionstracker.herokuapp.com/api/emissions
+https://emissionstracker.herokuapp.com/api/population
