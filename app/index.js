@@ -1,11 +1,14 @@
 const express = require('express')
 const logger = require('morgan')
+const cors = require('cors')
 const bodyParser = require('body-parser')
 const routes = require('./routes')
 
 const app = express()
 
+app.use(cors())
 app.use(bodyParser.json())
+app.use(express.static('build'))
 app.use(bodyParser.urlencoded({ extended: false }))
 logger.token('data', (req, res) => {
   return JSON.stringify(req.body)

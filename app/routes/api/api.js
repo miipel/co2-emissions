@@ -7,8 +7,6 @@ const router = require('express-promise-router')()
 const emissionsUrl = 'http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT?downloadformat=xml'
 const populationUrl = 'http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=xml'
 
-
-
 router.get('/emissions', (req, res) => {
   fetch(emissionsUrl)
     .then(response => response.body)
