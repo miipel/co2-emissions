@@ -7,8 +7,8 @@ const router = require('express-promise-router')()
 const emissionsUrl = 'http://api.worldbank.org/v2/en/indicator/EN.ATM.CO2E.KT?downloadformat=xml'
 const populationUrl = 'http://api.worldbank.org/v2/en/indicator/SP.POP.TOTL?downloadformat=xml'
 
-router.get('/emissions', (req, res) => {
-  fetch(emissionsUrl)
+const getEmissions = new Promise((resolve, reject) => {
+  return fetch(emissionsUrl)
     .then(response => response.body)
     .then(body => {
       const stream = body
@@ -25,12 +25,12 @@ router.get('/emissions', (req, res) => {
                 const model = records.map(record => {
                   return {
                     key: record.field[0].$.key,
-                    name: record.field[0]._,
+                    location: record.field[0]._,
                     year: record.field[2]._,
                     emissions: record.field[3]._
                   }
                 })
-                res.send(model)
+                resolve(model)
               })
           })
         })
@@ -40,8 +40,8 @@ router.get('/emissions', (req, res) => {
     })
 })
 
-router.get('/population', (req, res) => {
-  fetch(populationUrl)
+const getPopulations = new Promise((resolve, reject) => {
+  return fetch(populationUrl)
     .then(response => response.body)
     .then(body => {
       const stream = body
@@ -51,25 +51,34 @@ router.get('/population', (req, res) => {
           const writer = new streams.WritableStream()
           entry.pipe(writer)
           entry.on('end', () => {
-            parseString(writer.toString(), (err, result) => {
-              const data = JSON.stringify(result['Root']['data'][0]['record'])
-              const records = JSON.parse(data)
-              const model = records.map(record => {
-                return {
-                  key: record.field[0].$.key,
-                  name: record.field[0]._,
-                  year: record.field[2]._,
-                  population: record.field[3]._
-                }
+            parseString(writer.toString(),
+              (err, result) => {
+                const data = JSON.stringify(result['Root']['data'][0]['record'])
+                const records = JSON.parse(data)
+                const model = records.map(record => {
+                  return {
+                    key: record.field[0].$.key,
+                    location: record.field[0]._,
+                    year: record.field[2]._,
+                    population: record.field[3]._
+                  }
+                })
+                resolve(model)
               })
-              res.send(model)
-            })
           })
         })
     })
     .catch(error => {
       console.log(error)
     })
+})
+
+router.get('/emissions', (req, res) => {
+  getEmissions.then(emissions => res.send(emissions))
+})
+
+router.get('/population', (req, res) => {
+  getPopulations.then(populations => res.send(populations))
 })
 
 module.exports = router

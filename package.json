@@ -4,8 +4,8 @@
   "description": "Used to track co2-emissions",
   "main": "./bin/index.js",
   "scripts": {
-    "start": "node index.js",
-    "watch": "nodemon index.js",
+    "start": "node ./bin/index.js",
+    "watch": "nodemon ./bin/index.js",
     "test": "jest --verbose",
     "lint": "eslint ."
   },
