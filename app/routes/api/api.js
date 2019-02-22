@@ -73,8 +73,25 @@ const getPopulations = new Promise((resolve, reject) => {
     })
 })
 
+// Based on the data, only possible unique key is areakey+year
+// This operations can take 3 minutes to complete
+const combineData = (array1, array2) => {
+  const combined = [...array1, ...array2].reduce((accumulator, value) => ({
+    ...accumulator,
+    [value.key + value.year]: accumulator[value.key + value.year]
+      ? { ...accumulator[value.key + value.year], ...value }
+      : value
+  }), {})
+  Object.values(combined)
+}
+
 router.get('/emissions', (req, res) => {
-  getEmissions.then(emissions => res.send(emissions))
+  // Promise.all([getEmissions, getPopulations])
+  //   .then((values) => {
+  //     const data = combineData(values[0], values[1])
+  //     res.send(data)
+  //   })
+  getEmissions.then(populations => res.send(populations))
 })
 
 router.get('/population', (req, res) => {
