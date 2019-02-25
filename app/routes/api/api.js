@@ -56,18 +56,7 @@ router.get('/population', (req, res) => {
   getData(populationsUrl, populationsModel).then(populations => res.send(populations))
 })
 
-// Based on the data, only possible unique key is areakey+year
-// This operation can take 3 minutes to complete
-// const combineData = (array1, array2) => {
-//   const combined = [...array1, ...array2].reduce((accumulator, value) => ({
-//     ...accumulator,
-//     [value.key + value.year]: accumulator[value.key + value.year]
-//       ? { ...accumulator[value.key + value.year], ...value }
-//       : value
-//   }), {})
-//   Object.values(combined)
-// }
-
+// FIXME: https://ramdajs.com/docs/#mergeDeepWith
 const combineData = (emissions, populations) => {
   const combined = {}
   emissions.forEach(record => {
