@@ -73,8 +73,16 @@ const getPopulations = new Promise((resolve, reject) => {
     })
 })
 
+router.get('/emissions', (req, res) => {
+  getEmissions.then(populations => res.send(populations))
+})
+
+router.get('/population', (req, res) => {
+  getPopulations.then(populations => res.send(populations))
+})
+
 // Based on the data, only possible unique key is areakey+year
-// This operations can take 3 minutes to complete
+// This operation can take 3 minutes to complete
 const combineData = (array1, array2) => {
   const combined = [...array1, ...array2].reduce((accumulator, value) => ({
     ...accumulator,
@@ -85,17 +93,12 @@ const combineData = (array1, array2) => {
   Object.values(combined)
 }
 
-router.get('/emissions', (req, res) => {
-  // Promise.all([getEmissions, getPopulations])
-  //   .then((values) => {
-  //     const data = combineData(values[0], values[1])
-  //     res.send(data)
-  //   })
-  getEmissions.then(populations => res.send(populations))
-})
-
-router.get('/population', (req, res) => {
-  getPopulations.then(populations => res.send(populations))
-})
+// router.get('/data', (req, res) => {
+//   Promise.all([getEmissions, getPopulations])
+//     .then((values) => {
+//       const data = combineData(values[0], values[1])
+//       res.send(data)
+//     })
+// })
 
 module.exports = router
